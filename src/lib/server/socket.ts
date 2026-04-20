@@ -4,7 +4,7 @@ import type { Server as HTTPServer } from 'http';
 export type Player = {
     id: string,
     name: string,
-    socket_owner: boolean
+    isHost: boolean
 }
 let io: SocketIOServer | null = null;
 const lobbies = new Map<string, Array<Player>>();
@@ -26,7 +26,7 @@ export function initSocket(server: HTTPServer) {
             lobbies.set(lobbyCode, [{
                 id: socket.id,
                 name: playerName,
-                socket_owner: true,
+                isHost: true,
             }]);
 
             socket.join(lobbyCode); // Join socket.io room
@@ -38,7 +38,7 @@ export function initSocket(server: HTTPServer) {
             console.log(`Lobby Created: ${lobbyCode} by ${playerName}`);
         });
 
-        socket.on('nameChanged', (code: string, oldName: string, newName: string) => {
+        socket.on('nameChanged', (code: string, newName: string) => {
             const lobby = lobbies.get(code);
 
             if (!lobby) {
@@ -46,17 +46,14 @@ export function initSocket(server: HTTPServer) {
                 return;
             }
 
-            for (let player of lobby) {
-                if (player.name == oldName) {
-                    player.name = newName;
-                    break;
-                }
-            }
+            const player = lobby.find(p => p.id === socket.id);
+            if (player) {
+                const oldName = player.name;
+                player.name = newName;
 
-            io?.to(code).emit('lobbyUpdated', {
-                code,
-                players: lobby
-            });
+                io?.to(code).emit('lobbyUpdated', { code, players: lobby });
+                console.log(`Name changed in ${code}: ${oldName} → ${newName}`);
+            }
 
         });
 
@@ -75,7 +72,7 @@ export function initSocket(server: HTTPServer) {
             lobby.push({
                 id: socket.id,
                 name: playerName,
-                socket_owner: false,
+                isHost: false,
             })
             socket.join(code);
 
