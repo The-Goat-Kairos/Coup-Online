@@ -53,6 +53,8 @@
         });
 
         function updateIsInLobby() {
+            console.log($state.snapshot(currentPlayers));
+            console.log($state.snapshot(myPlayerId));
             isInLobby = currentPlayers.some((p: Player) => p.id === myPlayerId);
         }
 
@@ -86,8 +88,8 @@
         {/if}
 
         <!-- Game Table -->
-        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl p-12 min-h-[500px] relative">
-            <p class="text-center text-zinc-500 mb-12">Game Table (custom art coming soon)</p>
+        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[500px] relative {!isInLobby ? 'disabled' : ''}">
+            <p class="text-center text-zinc-500 mb-12">Game Table</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {#each currentPlayers as player (player.id)}

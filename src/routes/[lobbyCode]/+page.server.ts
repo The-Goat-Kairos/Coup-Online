@@ -1,4 +1,4 @@
-import { goto } from '$app/navigation';
+import { redirect } from "@sveltejs/kit";
 import { lobbies } from "$lib/server/lobbies";
 import type { PageServerLoad } from "./$types";
 
@@ -6,14 +6,25 @@ export const load: PageServerLoad = ({ params }) => {
     const code = params.lobbyCode?.toUpperCase().trim();
 
     if (!code || code.length !== 6) {
-        goto('/');
+        throw redirect(308, '/');
     }
 
-    console.log(lobbies);
     const lobbyPlayers = lobbies.get(code);
 
     if (!lobbyPlayers) {
-        goto('/');
+        throw redirect(308, '/');
+        // return {
+        //     lobbyCode: "123456",
+        //     players: [{
+        //         id: "tests1",
+        //         name: "testing",
+        //         isHost: true
+        //     }, {
+        //         id: "tests2",
+        //         name: "tester",
+        //         isHost: false
+        //     }]
+        // }
     }
 
     return {
