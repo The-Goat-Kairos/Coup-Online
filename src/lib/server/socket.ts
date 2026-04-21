@@ -1,13 +1,8 @@
 import { Server as SocketIOServer } from "socket.io";
 import type { Server as HTTPServer } from 'http';
+import { lobbies } from './lobbies';
 
-export type Player = {
-    id: string,
-    name: string,
-    isHost: boolean
-}
-let io: SocketIOServer | null = null;
-const lobbies = new Map<string, Array<Player>>();
+let io: SocketIOServer | null = null
 
 export function initSocket(server: HTTPServer) {
     if (io) return io;
@@ -131,3 +126,5 @@ export function initSocket(server: HTTPServer) {
 function generateLobbyCode(): string {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
+
+export { lobbies };

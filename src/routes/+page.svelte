@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Player } from '$lib/server/socket';
+    import type { Player } from '$lib/server/types';
     import { goto } from '$app/navigation';
     import { io, type Socket } from 'socket.io-client';
     import { onMount } from 'svelte';
