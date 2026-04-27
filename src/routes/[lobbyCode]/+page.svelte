@@ -1,6 +1,7 @@
 <!-- src/routes/[lobbyCode]/+page.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
+	import cardDrawing from '$lib/assets/cardDrawing.png';
     import { goto } from '$app/navigation';
     import { io, type Socket } from 'socket.io-client';
     import type { Player } from '$lib/types';
@@ -12,6 +13,13 @@
             players: Player[];
         }
     }>();
+
+    let gameState = $state({
+        coins: 2,                             // your coins
+        myInfluences: ['Duke', 'Assassin'],   // your real cards (face up)
+        revealedCards: [] as string[],        // lost cards shown face up
+        turn: 'CoolPlayerName'                // whose turn it is
+    });
 
     // Derived values so they react if data changes (fixes the Svelte warning)
     let lobbyCode = $derived(data.lobbyCode);
@@ -74,38 +82,61 @@
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-5xl font-bold">
-                Coup — Room <span class="text-yellow-400 font-mono tracking-widest">{lobbyCode}</span>
+                Coup - Room <span class="text-yellow-400 font-mono tracking-widest">{lobbyCode}</span>
             </h1>
             <button onclick={() => goto('/')} class="text-zinc-400 hover:text-white">
                 ← Leave
             </button>
         </div>
 
-        {#if !isInLobby}
-            <div class="bg-yellow-900/30 border border-yellow-600 p-6 rounded-2xl text-center mb-8">
-                <p class="text-xl">You are spectating this game.</p>
+        <!-- {#if !isInLobby} -->
+        <!--     <div class="bg-yellow-900/30 border border-yellow-600 p-6 rounded-2xl text-center mb-8"> -->
+        <!--         <p class="text-xl">You are spectating this game.</p> -->
+        <!--     </div> -->
+        <!-- {/if} -->
+
+        <!-- Main Game Area -->
+        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[500px] relative {!isInLobby ? 'disabled' : ''}">
+            <div class="text-center mb-8">
+                <p class="text-center text-zinc-500">Game Table</p>
             </div>
-        {/if}
 
-        <!-- Game Table -->
-        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[200px] relative {!isInLobby ? 'disabled' : ''}">
-            <p class="text-center text-zinc-500 mb-1">Game Table</p>
-            <p class="text-center text-white-500 font-bold mb-11">Coins: 2</p>
+            <div class="bg-zinc-900 border-2 border-emerald-500 rounded-3xl p-6 shadow-2xl mb-16">
+                <p class="text-center text-emerald-400 text-sm mb-4 tracking-widest">YOUR INFLUENCE</p>
 
-            <div class="flex flex-10 justify-evenly gap-8">
-                {#each [1,2]} <!-- temporary list just to see how 2 cards would look -->
-                <div class="text-center">
-                    <div class="h-120 w-80 bg-zinc-900 rounded-2xl flex items-center justify-center border-2 border-dashed border-zinc-700 text-xl">
-                        <!-- This is where we display the players cards -->
-                        <!-- so This is an imagae -->
-                    </div>
-                    <p class="mt-4 font-medium">
-                        <!-- This is where we put the name of the card -->
-                    </p>
-                    <p class="mt-4 font-small text-zinc-600">
-                        <!-- This is where we put the description of the characters action -->
-                    </p>
+                <div class="flex gap-6 justify-evenly">
+                    {#each gameState.myInfluences as card}
+                        <div class="flex flex-col justify-center text-center">
+                            <div class="w-28 aspect-[2/3] bg-gradient-to-br from-amber-900 to-amber-700 border-4 border-amber-400 rounded-2xl overflow-hidden flex items-center justify-center shadow-xl">
+                                <img src={cardDrawing} alt="card" class="w-full h-full object-cover" />
+                            </div>
+                            <p class="font-bold text-lg">{card}</p>
+                        </div>
+                    {/each}
                 </div>
+
+                <div class="text-center mt-6">
+                    <p class="text-3xl font-bold text-yellow-400">{gameState.coins} 💰</p>
+                </div>
+            </div>
+
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                {#each currentPlayers as player (player.id)}
+                    <div class="text-center">
+                        <div class="flex justify-center gap-3 mb-3">
+                            {#each [1, 2]}
+                                <div class="w-20 aspect-[2/3] bg-zinc-800 border-3 border-zinc-600 rounded-xl overflow-hidden flex items-center justify-center text-4xl shadow-md">
+                                    <img src={cardDrawing} alt="card" class="w-full h-full object-cover" />
+                                </div>
+                            {/each}
+                        </div>
+                        <p class="font-medium text-lg">
+                            {player.name}
+                            {#if player.id === myPlayerId}<span class="text-green-400"> (You)</span>{/if}
+                        </p>
+                        <p class="text-2xl font-bold text-yellow-400">2 💰</p>
+                    </div>
                 {/each}
             </div>
         </div>

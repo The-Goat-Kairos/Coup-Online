@@ -5,9 +5,9 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad = ({ params }) => {
     const code = params.lobbyCode?.toUpperCase().trim();
 
-    if (!code || code.length !== 6) {
-        throw redirect(308, '/');
-    }
+    // if (!code || code.length !== 6) {
+    //     throw redirect(308, '/');
+    // }
 
     const lobbyPlayers = lobbies.get(code);
 
@@ -16,14 +16,30 @@ export const load: PageServerLoad = ({ params }) => {
         return {
             lobbyCode: "123456",
             players: [{
-                id: "tests1",
-                name: "testing",
+                id: "test1",
+                name: "test1",
                 isHost: true
             }, {
-                id: "tests2",
-                name: "tester",
+                id: "test2",
+                name: "test2",
                 isHost: false
-            }]
+            },
+            {
+                id: "test3",
+                name: "test3",
+                isHost: false
+            },
+            {
+                id: "test4",
+                name: "test4",
+                isHost: false
+            },
+            {
+                id: "test5",
+                name: "test5",
+                isHost: false
+            },
+            ]
         }
     }
 
