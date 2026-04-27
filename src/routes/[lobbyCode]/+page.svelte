@@ -88,28 +88,30 @@
         {/if}
 
         <!-- Game Table -->
-        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[500px] relative {!isInLobby ? 'disabled' : ''}">
-            <p class="text-center text-zinc-500 mb-12">Game Table</p>
+        <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[200px] relative {!isInLobby ? 'disabled' : ''}">
+            <p class="text-center text-zinc-500 mb-1">Game Table</p>
+            <p class="text-center text-white-500 font-bold mb-11">Coins: 2</p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {#each currentPlayers as player (player.id)}
-                    <div class="text-center">
-                        <div class="h-32 bg-zinc-900 rounded-2xl flex items-center justify-center border-2 border-dashed border-zinc-700 text-xl">
-                            {#if player.id === myPlayerId}
-                                Your Influence Cards
-                            {:else}
-                                🃏 {player.name}'s cards
-                            {/if}
-                        </div>
-                        <p class="mt-4 font-medium">
-                            {player.name}
-                            {#if player.isHost} 👑{/if}
-                            {#if player.id === myPlayerId} <span class="text-green-400">(You)</span>{/if}
-                        </p>
+            <div class="flex flex-10 justify-evenly gap-8">
+                {#each [1,2]} <!-- temporary list just to see how 2 cards would look -->
+                <div class="text-center">
+                    <div class="h-120 w-80 bg-zinc-900 rounded-2xl flex items-center justify-center border-2 border-dashed border-zinc-700 text-xl">
+                        <!-- This is where we display the players cards -->
+                        <!-- so This is an imagae -->
                     </div>
+                    <p class="mt-4 font-medium">
+                        <!-- This is where we put the name of the card -->
+                    </p>
+                    <p class="mt-4 font-small text-zinc-600">
+                        <!-- This is where we put the description of the characters action -->
+                    </p>
+                </div>
                 {/each}
             </div>
         </div>
+        <!-- {#each currentPlayers as player (player.id)} -->
+        <!--     <p>Yes</p> -->
+        <!-- {/each} -->
 
         {#if currentPlayers.some((p: Player) => p.id === myPlayerId && p.isHost)}
             <button onclick={endGame} class="mt-8 bg-red-600 px-6 py-3 rounded-xl w-full">

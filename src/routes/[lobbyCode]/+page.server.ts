@@ -12,19 +12,19 @@ export const load: PageServerLoad = ({ params }) => {
     const lobbyPlayers = lobbies.get(code);
 
     if (!lobbyPlayers) {
-        throw redirect(308, '/');
-        // return {
-        //     lobbyCode: "123456",
-        //     players: [{
-        //         id: "tests1",
-        //         name: "testing",
-        //         isHost: true
-        //     }, {
-        //         id: "tests2",
-        //         name: "tester",
-        //         isHost: false
-        //     }]
-        // }
+        // throw redirect(308, '/');
+        return {
+            lobbyCode: "123456",
+            players: [{
+                id: "tests1",
+                name: "testing",
+                isHost: true
+            }, {
+                id: "tests2",
+                name: "tester",
+                isHost: false
+            }]
+        }
     }
 
     return {
