@@ -1,4 +1,3 @@
-<!-- src/routes/[lobbyCode]/+page.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
 	import cardDrawing from '$lib/assets/cardDrawing.png';
@@ -82,37 +81,48 @@
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-5xl font-bold">
-                Coup - Room <span class="text-yellow-400 font-mono tracking-widest">{lobbyCode}</span>
+                Coup - Room <span class="text-yellow-400 font-mono tracking-wider">{lobbyCode}</span>
             </h1>
             <button onclick={() => goto('/')} class="text-zinc-400 hover:text-white">
                 ← Leave
             </button>
         </div>
 
-        <!-- {#if !isInLobby} -->
-        <!--     <div class="bg-yellow-900/30 border border-yellow-600 p-6 rounded-2xl text-center mb-8"> -->
-        <!--         <p class="text-xl">You are spectating this game.</p> -->
-        <!--     </div> -->
-        <!-- {/if} -->
+        {#if !isInLobby}
+            <div class="bg-yellow-900/30 border border-yellow-600 p-6 rounded-2xl text-center mb-8">
+                <p class="text-xl">You are spectating this game.</p>
+            </div>
+        {/if}
 
         <!-- Main Game Area -->
         <div class="mt-12 bg-zinc-950 border border-zinc-700 rounded-3xl pl-12 pr-12 pb-12 pt-6 min-h-[500px] relative {!isInLobby ? 'disabled' : ''}">
+            <!-- -------------------------------------------------------------------------------- -->
+            <!-- OWN PLAYER -->
+            <!-- -------------------------------------------------------------------------------- -->
             <div class="text-center mb-8">
                 <p class="text-center text-zinc-500">Game Table</p>
             </div>
 
             <div class="bg-zinc-900 border-2 border-emerald-500 rounded-3xl p-6 shadow-2xl mb-16">
-                <p class="text-center text-emerald-400 text-sm mb-4 tracking-widest">YOUR INFLUENCE</p>
 
-                <div class="flex gap-6 justify-evenly">
+                <p class="text-center text-emerald-400 text-sm mb-4 tracking-widest">YOUR INFLUENCE</p>
+                <div class="flex gap-6 mx-8 justify-between">
+                    <div class="flex gap-6">
                     {#each gameState.myInfluences as card}
                         <div class="flex flex-col justify-center text-center">
-                            <div class="w-28 aspect-[2/3] bg-gradient-to-br from-amber-900 to-amber-700 border-4 border-amber-400 rounded-2xl overflow-hidden flex items-center justify-center shadow-xl">
+                            <div class="w-32 aspect-[2/3] bg-gradient-to-br from-amber-900 to-amber-700 border-4 border-amber-400 rounded-2xl overflow-hidden flex items-center justify-center shadow-xl">
                                 <img src={cardDrawing} alt="card" class="w-full h-full object-cover" />
                             </div>
                             <p class="font-bold text-lg">{card}</p>
                         </div>
                     {/each}
+                    </div>
+
+                    <div class="w-96 h-64 bg-gradient-to-br from-amber-900 to-amber-700 border-4 border-amber-400 rounded-2xl overflow-hidden flex flex-col shadow-xl">
+                        {#each ["Income", "Foreign Aid", "Coup"] as actn}
+                            <button class="text-2xl rounded-md pl-2 text-left">{actn}</button>
+                        {/each}
+                    </div>
                 </div>
 
                 <div class="text-center mt-6">
@@ -121,6 +131,9 @@
             </div>
 
 
+            <!-- -------------------------------------------------------------------------------- -->
+            <!-- OTHER PLAYERS -->
+            <!-- -------------------------------------------------------------------------------- -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {#each currentPlayers as player (player.id)}
                     <div class="text-center">
